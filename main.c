@@ -50,12 +50,21 @@ int main(void)
 	{
 		do
 		{
+<<<<<<< HEAD
 			pit_inter_status = PIT_get_interrupt_flag_status( PIT_0 );
 		} while (FALSE == pit_inter_status);
 
 		GPIO_toogle_pin(GPIO_D, bit_0);		// Genera señal de onda cuadrada
 
 //		PIT_clear_interrupt_flag();
+=======
+			pit_inter_status = PIT_get_interrupt_flag_status();
+		} while (FALSE == pit_inter_status);
+
+		GPIO_toogle_pin(GPIO_D, bit_0);
+
+		PIT_clear_interrupt_flag();
+>>>>>>> f949995d5439477464a058785ed51397fbb4b482
 	}
 
 	return 0;

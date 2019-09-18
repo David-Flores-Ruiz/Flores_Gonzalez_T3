@@ -42,6 +42,7 @@ void PIT_delay(PIT_timer_t pit_timer, My_float_pit_t system_clock,My_float_pit_t
 	PIT->CHANNEL[pit_timer].LDVAL = cycles_number - 1; /** Load of number of cycles */
 	PIT->CHANNEL[pit_timer].TCTRL |= PIT_TCTRL_TIE_MASK;// set TIE - enable interrupts Timer
 	PIT->CHANNEL[pit_timer].TCTRL |= PIT_TCTRL_TEN_MASK;// set TEN - start Timer
+<<<<<<< HEAD
 }
 
 uint8_t PIT_get_interrupt_flag_status(PIT_timer_t pit_timer) {
@@ -49,4 +50,6 @@ uint8_t PIT_get_interrupt_flag_status(PIT_timer_t pit_timer) {
 
 	status = PIT->CHANNEL[pit_timer].TFLG;		// Esta es HW TIF
 	return (status);
+=======
+>>>>>>> f949995d5439477464a058785ed51397fbb4b482
 }

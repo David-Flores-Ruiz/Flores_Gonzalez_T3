@@ -14,7 +14,11 @@
 
 
 typedef float My_float_pit_t;
+<<<<<<< HEAD
 typedef float My_double_pit_t;
+=======
+typedef double My_double_pit_t;
+>>>>>>> f949995d5439477464a058785ed51397fbb4b482
 
 /*! This enumerated constant are used to select the PIT to be used*/
 typedef enum {PIT_0,PIT_1,PIT_2,PIT_3} PIT_timer_t;
