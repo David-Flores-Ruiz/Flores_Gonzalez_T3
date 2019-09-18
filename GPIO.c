@@ -213,5 +213,27 @@ void GPIO_clear_pin(gpio_port_name_t port_name, uint8_t pin)   // f(x) #10	done!
 		break;
 	}
 }
-void GPIO_toogle_pin(gpio_port_name_t portName, uint8_t pin);  // f(x) #11
+void GPIO_toogle_pin(gpio_port_name_t port_name, uint8_t pin)  // f(x) #11	done!
+{
+	switch (port_name) {
+	case GPIO_A:
+		GPIOA->PTOR = (1 << pin);
+		break;
+	case GPIO_B:/** GPIO B is selected*/
+		GPIOB->PTOR = (1 << pin);
 
+		break;
+	case GPIO_C:/** GPIO C is selected*/
+		GPIOC->PTOR = (1 << pin);
+		break;
+	case GPIO_D:/** GPIO D is selected*/
+		GPIOD->PTOR = (1 << pin);
+		break;
+	case GPIO_E:/** GPIO E is selected*/
+		GPIOE->PTOR = (1 << pin);
+	default:/**If doesn't exist the option*/
+
+		break;
+	}
+
+}

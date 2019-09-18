@@ -8,6 +8,16 @@
 #include "MK64F12.h"
 #include "PIT.h"
 
+/*! This variable hold the PIT clock	  	*/
+uint32_t clock_PIT;
+
+/*! This variable hold the PIT period	  	*/
+My_double_pit_t period_PIT;
+
+/*! This variable is the cycles to spend	*/
+uint32_t cycles_number;
+
+
 void PIT_clock_gating(void)
 {
 	SIM->SCGC6 |= SIM_SCGC6_PIT_MASK;	// Set bit 23 - enable module PIT
@@ -15,29 +25,28 @@ void PIT_clock_gating(void)
 
 void PIT_enable(void)
 {
-	PIT->MCR |= 0x0;	//PIT_MCR_MDIS_MASK;		// bit 1 - MDIS
+	PIT->MCR &= ~(0x02);	//PIT_MCR_MDIS_MASK;		// bit 1 - MDIS enable PIT section
 }
 
 void FRZ_enable(void)
 {
-	PIT->MCR |= PIT_MCR_FRZ_MASK;		// bit 0 - FRZ
+	PIT->MCR |= PIT_MCR_FRZ_MASK;		// bit 0 - FRZ enable Mode Debug
 }
 
-void PIT_delay(PIT_timer_t pit_timer, My_float_pit_t system_clock , My_float_pit_t delay)
+void PIT_delay(PIT_timer_t pit_timer, My_float_pit_t system_clock,My_float_pit_t delay)
 {
-	switch (pit_timer)/** Selecting the PIT timer to be used */
-	{
-	case PIT_0: /** PIT_0 is selected*/
-		PIT->CHANNEL[0] = 0x00000034; /** Load of number of cycles */
-		break;
-	case PIT_1: /** PIT_1 is selected*/
-		 /** Load of number of cycles */
-		break;
-	case PIT_2: /** PIT_2 is selected*/
-		 /** Load of number of cycles */
-		break;
-	case PIT_3: /** PIT_3 is selected*/
-		 /** Load of number of cycles*/
-		break;
-	}		// end switch
+	clock_PIT = system_clock / 2;
+	period_PIT = 1 / clock_PIT;
+
+	cycles_number = (delay / period_PIT);
+	PIT->CHANNEL[pit_timer].LDVAL = cycles_number - 1; /** Load of number of cycles */
+	PIT->CHANNEL[pit_timer].TCTRL |= PIT_TCTRL_TIE_MASK;// set TIE - enable interrupts Timer
+	PIT->CHANNEL[pit_timer].TCTRL |= PIT_TCTRL_TEN_MASK;// set TEN - start Timer
+}
+
+uint8_t PIT_get_interrupt_flag_status(PIT_timer_t pit_timer) {
+	uint8_t status = 0;
+
+	status = PIT->CHANNEL[pit_timer].TFLG;		// Esta es HW TIF
+	return (status);
 }

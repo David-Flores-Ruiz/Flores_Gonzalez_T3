@@ -14,6 +14,7 @@
 
 
 typedef float My_float_pit_t;
+typedef float My_double_pit_t;
 
 /*! This enumerated constant are used to select the PIT to be used*/
 typedef enum {PIT_0,PIT_1,PIT_2,PIT_3} PIT_timer_t;
@@ -52,7 +53,7 @@ void PIT_clock_gating(void);
  	 \param[in]  void.
  	 \return uint8_t flag status
  */
-uint8_t PIT_get_interrupt_flag_status(void);
+uint8_t PIT_get_interrupt_flag_status(PIT_timer_t pit_timer);	// Add one param
 
 /********************************************************************************************/
 /*!
