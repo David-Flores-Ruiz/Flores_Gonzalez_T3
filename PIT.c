@@ -7,16 +7,15 @@
 
 #include "MK64F12.h"
 #include "PIT.h"
+#include "Bits.h"
 
-/*! This variable hold the PIT clock	  	*/
-uint32_t clock_PIT;
+static PIT_interrupt_flags_t g_intrPIT_status_flag = {0};
 
-/*! This variable hold the PIT period	  	*/
-My_double_pit_t period_PIT;
-
-/*! This variable is the cycles to spend	*/
-uint32_t cycles_number;
-
+void PIT0_IRQHandler(void)							// ESTE ES MI VECTOR DE INTERRUPCIÓN
+{
+	g_intrPIT_status_flag.flag_PIT_channel_0 = TRUE;// Enciendo bandera por Software
+	PIT_clear_interrupt(PIT_0);				// Apago interrupción por HW
+}
 
 void PIT_clock_gating(void)
 {
@@ -35,21 +34,36 @@ void FRZ_enable(void)
 
 void PIT_delay(PIT_timer_t pit_timer, My_float_pit_t system_clock,My_float_pit_t delay)
 {
-	clock_PIT = system_clock / 2;
-	period_PIT = 1 / clock_PIT;
 
-	cycles_number = (delay / period_PIT);
+	My_float_pit_t clock_PIT;		/*! This variable hold the PIT clock	  	*/
+	My_float_pit_t period_PIT;		/*! This variable hold the PIT period	  	*/
+	uint32_t cycles_number;			/*! This variable is the cycles to spend	*/
+
+	clock_PIT = system_clock / 2;
+	period_PIT = (My_float_pit_t)(1 / clock_PIT);
+
+	cycles_number = (int)(delay / period_PIT);
 	PIT->CHANNEL[pit_timer].LDVAL = cycles_number - 1; /** Load of number of cycles */
 	PIT->CHANNEL[pit_timer].TCTRL |= PIT_TCTRL_TIE_MASK;// set TIE - enable interrupts Timer
 	PIT->CHANNEL[pit_timer].TCTRL |= PIT_TCTRL_TEN_MASK;// set TEN - start Timer
-<<<<<<< HEAD
 }
 
-uint8_t PIT_get_interrupt_flag_status(PIT_timer_t pit_timer) {
+uint8_t PIT_get_irq_flag_status(PIT_timer_t pit_timer)	// SOFTWARE FLAG
+{
 	uint8_t status = 0;
 
-	status = PIT->CHANNEL[pit_timer].TFLG;		// Esta es HW TIF
+	status = g_intrPIT_status_flag.flag_PIT_channel_0;		// Esta es Software
 	return (status);
-=======
->>>>>>> f949995d5439477464a058785ed51397fbb4b482
+}
+
+void PIT_clear_irq_flag_status(PIT_timer_t pit_timer)	// SOFTWARE FLAG
+{
+
+	g_intrPIT_status_flag.flag_PIT_channel_0 = FALSE;		// Apagamos la bandera de HW
+
+}
+
+void PIT_clear_interrupt(PIT_timer_t pit_timer)	// HARDWARE FLAG
+{
+	PIT->CHANNEL[pit_timer].TFLG = TRUE;	// Borramos bandera de Hardware
 }

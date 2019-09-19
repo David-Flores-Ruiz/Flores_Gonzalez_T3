@@ -15,10 +15,11 @@
 #include "Bits.h"
 
 #define SYSTEM_CLOCK (21000000U)
-#define DELAY (0.01F)			// 0.025	seg
-								// 0.01785	seg
-								// 0.00050	seg
-//#define DEBUG_ON
+#define DELAY (0.00050)			// (0.01F)
+								//  0.025	seg
+								//  0.01785	seg
+								//  0.00050	seg
+#define DEBUG_ON
 
 int main(void)
 {
@@ -32,7 +33,7 @@ int main(void)
 	GPIO_set_pin(GPIO_D, bit_0);						   // Safe value - 1
 	PIT_clock_gating();		// Habilita modulo PIT
 	PIT_enable();			// Habilita PIT Timers
-	FRZ_enable();	// For enter in Debug Mode
+//	FRZ_enable();	// For enter in Debug Mode
 
 //	/**Sets the threshold for interrupts, if the interrupt has higher priority constant that the BASEPRI, the interrupt will not be attended*/
 //	NVIC_set_basepri_threshold(PRIORITY_10);
@@ -45,26 +46,14 @@ int main(void)
 	current_time = PIT->CHANNEL[PIT_0].CVAL; /** Visualize the current time of the Timer */
 #endif
 
-
-	for (;;)
-	{
-		do
-		{
-<<<<<<< HEAD
-			pit_inter_status = PIT_get_interrupt_flag_status( PIT_0 );
+	for (;;) {
+		do {
+			pit_inter_status = PIT_get_irq_flag_status(PIT_0);// Revisamos bandera de software
 		} while (FALSE == pit_inter_status);
 
 		GPIO_toogle_pin(GPIO_D, bit_0);		// Genera señal de onda cuadrada
 
-//		PIT_clear_interrupt_flag();
-=======
-			pit_inter_status = PIT_get_interrupt_flag_status();
-		} while (FALSE == pit_inter_status);
-
-		GPIO_toogle_pin(GPIO_D, bit_0);
-
-		PIT_clear_interrupt_flag();
->>>>>>> f949995d5439477464a058785ed51397fbb4b482
+		PIT_clear_irq_flag_status(PIT_0);	// Limpiamos bandera de Hardware
 	}
 
 	return 0;
